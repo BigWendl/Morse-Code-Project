@@ -8,7 +8,7 @@ int main()
 	Decode_Morse M;
 	
 	M.create_morse_map();
-	//cout << "b: " <<  " " << M.Morse_Map['b'] << endl;
+	cout << "computer = " << M.encode_msg("computer") << endl;
 
 	system("pause");
 	return 0;
