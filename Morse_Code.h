@@ -64,7 +64,7 @@ public:
 		string result = "";//initialize result string to null
 		for (int i = 0; i < input.size(); i++)//for loop to go through each character in the input string
 		{
-			result += Morse_Map[input[i]] + " ";//add morse code result of each character to result string followed by a space
+			result += Morse_Map[input[i]] + "|";//add morse code result of each character to result string followed by a space
 		}
 		return result;//return result string
 	}
