@@ -18,11 +18,7 @@ private:
 	vector<string> letterVector{ " ","e","i","s","h","NULL","NULL","v","NULL","NULL","u","f","NULL","NULL","NULL","a","r","l","NULL","NULL","NULL","w","p","NULL","NULL","j","NULL","NULL","t","n","d","b","NULL" ,"NULL","x","NULL" ,"NULL" ,"k","c","NULL","NULL","y","NULL","NULL","m","g","z","NULL","NULL","q","NULL","NULL","o","NULL","NULL" };
 	
 public:
-	map<char, string>Morse_Map;//The last line in the technical requirements says "You may use a binary search tree or a map to store the codes for letters."
-	//I've emailed the instructor for clarification because it seemed easier to store the values in a map. 
-	//I made the map public for now because I was struggling with the getter. We can fix that and make it private later if needed.
-	//Reply from instructor said "The map or BST is intended for encoding whereas the Morse tree is intended for decoding. That means you still need
-	//to build the Morse tree and use it for decoding."
+	map<char, string>Morse_Map;//Map for encoding Morse Code
 		
 	void create_morse_map()//Function to populate the map with the letters and morse code equivalent.
 	{
