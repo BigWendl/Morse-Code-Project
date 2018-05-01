@@ -5,21 +5,19 @@
 #include <fstream>
 #include <map>
 #include <iostream>
-#include "Binary_Tree.h" 
+#include "Binary_Search_Tree.h"
 
 using namespace std;
 
 class Morse_Code {
-
 private:
-	char letter;
+	char letter, dot = '.', dash = '_';
 	string morse;
-	vector<string> codeVector{ " ",".","..","...","....","NULL","NULL","..._","NULL","NULL",".._",".._.","NULL","NULL","NULL","._","._.","._..","NULL","NULL","NULL",".__",".__.","NULL","NULL",".___","NULL","NULL","_","_.","_..","_...","NULL" ,"NULL","_.._","NULL" ,"NULL" ,"_._","_._.","NULL","NULL","_.__","NULL","NULL","__","__.","__..","NULL","NULL","__._","NULL","NULL","___","NULL","NULL" };
-	vector<string> letterVector{ " ","e","i","s","h","NULL","NULL","v","NULL","NULL","u","f","NULL","NULL","NULL","a","r","l","NULL","NULL","NULL","w","p","NULL","NULL","j","NULL","NULL","t","n","d","b","NULL" ,"NULL","x","NULL" ,"NULL" ,"k","c","NULL","NULL","y","NULL","NULL","m","g","z","NULL","NULL","q","NULL","NULL","o","NULL","NULL" };
-	
+	Binary_Search_Tree<char> letterTree;
+	map<char, string>Morse_Map;
+
 public:
-	map<char, string>Morse_Map;//Map for encoding Morse Code
-		
+
 	void create_morse_map()//Function to populate the map with the letters and morse code equivalent.
 	{
 		ifstream fin("morse.txt");//read from the morse.txt file provided by instructor
@@ -28,93 +26,88 @@ public:
 			Morse_Map[letter] = morse;//set key to letter and value to the associated morse code
 		}
 	}
-	// builds the tree
-	string buildTree(string& filename) {
-		string result = "", mCode;
-		
-		ifstream in(filename);
-		if (!in) {
-			cout << "cannot find file specified";
-		}
-		std::string str;
-		while (std::getline(in, str)) {
-			Insert2(str[0], str.erase(0));
+
+	void buildTree() //wrapper function to build the letter binary tree
+	{
+		letterTree.insert(' ');
+		ifstream in("morse.txt");
+
+		while (in >> letter >> morse) 
+		{
+			insert(letter, morse);
 		}
 	}
-	//inserts data into the node
-	void Insert1(Node *&n, char letter, string code) {
-		if (n == NULL) {
-			n = new Node;
-			n->l = letter;
-			n->code = code;
-			n->left = n->right = NULL;
-		}
-	}
-	//wrapper function for insertion methods
-	void Insert2(char letter, string code) {
-		Node *n = root;
-		if (n != NULL) {
-			for (int i = 0; i < code.length(); i++) {
-				if (code[i] != '.' || code[i] != '_')
-					
-				if (code[i] == '.') {
+
+	void insert(char letter, string code)//places each node in correct node
+	{
+		BTNode<char> *n = letterTree.getRoot();
+		for (int i = 0; i < code.size(); i++)
+		{
+
+				if (code[i] == '.') 
+				{
 					if (n->left)
 						n = n->left;
-					else {
-						break;
+					else
+					{
+						n->left = new BTNode<char> (' ', NULL, NULL);
+						n = n->left;
 					}
 				}
-				else {
+				else 
+				{
 					if (n->right)
 						n = n->right;
 					else
-						break;
+					{
+						n->right = new BTNode<char> (' ', NULL, NULL);
+						n = n->right;
+					}
 				}
-				
-			}
-			Insert1(n, letter, code);
-
 		}
-		else Insert1(root, letter, code);
-		
-
+		if (n == NULL)
+			n = new BTNode<char>(letter, NULL, NULL);
+		else if (n->data == ' ')
+			n->data = letter;
 	}
-	
+
 	string decode_msg(string input)//Function accepts morse code input string to and returns result of conversion
 	{		
+		buildTree();
+		BTNode<char>* n = letterTree.getRoot();
 		string result = "", mCode;
-		Binary_Tree<string> letter;
-		letter.read_tree(letterVector);
-		Binary_Tree<string> code;
-		code.read_tree(codeVector);
 
 		istringstream tokens(input);
 
-		while (tokens >> mCode)
+		while (tokens >> mCode)//evaulate each letter individually
 		{
-			for (int i = 0; i < mCode.size(); i++)
-			{
-				if (mCode[i] == '.')
-					letter = letter.get_left_subtree();
-				if (mCode[i] == '_')
-					letter = letter.get_right_subtree();
+			n = letterTree.getRoot();//set to root of tree
+
+			for (int i = 0; i < mCode.size(); i++)//run through entire size of the given code
+			{	
+				if (mCode[i] != '.' && mCode[i] != '_')
+					return "Character is not valid for decoding morse code.";
+				else if (mCode[i] == dot)//if code has a dot nagviate the left side of the tree
+					n = n->left;
+				else if (mCode[i] == dash)//if code has a dot nagviate the right side of the tree
+					n = n->right;
 			}
 
-			result += letter.get_data();
-			letter.read_tree(letterVector);
+			result += n->data;//add each letter as found
+			buildTree();//reread the vector to reset the root
 		}
 		return result;
 	}
 
 	string encode_msg(string input)//Function accepts input string and returns morse code result 
 	{
+		create_morse_map();
 		string result = "";//initialize result string to null
+		create_morse_map();
 		for (int i = 0; i < input.size(); i++)//for loop to go through each character in the input string
-		{
-			result += Morse_Map[input[i]] + "|";//add morse code result of each character to result string followed by a space
-		}
+			result += Morse_Map[input[i]] + " ";//add morse code result of each character to result string followed by a space
+
 		return result;//return result string
 	}
 };
 #endif
-
