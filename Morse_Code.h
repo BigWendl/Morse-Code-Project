@@ -28,6 +28,57 @@ public:
 			Morse_Map[letter] = morse;//set key to letter and value to the associated morse code
 		}
 	}
+	// builds the tree
+	string buildTree(string& filename) {
+		string result = "", mCode;
+		
+		ifstream in(filename);
+		if (!in) {
+			cout << "cannot find file specified";
+		}
+		std::string str;
+		while (std::getline(in, str)) {
+			Insert2(str[0], str.erase(0));
+		}
+	}
+	//inserts data into the node
+	void Insert1(Node *&n, char letter, string code) {
+		if (n == NULL) {
+			n = new Node;
+			n->l = letter;
+			n->code = code;
+			n->left = n->right = NULL;
+		}
+	}
+	//wrapper function for insertion methods
+	void Insert2(char letter, string code) {
+		Node *n = root;
+		if (n != NULL) {
+			for (int i = 0; i < code.length(); i++) {
+				if (code[i] != '.' || code[i] != '_')
+					
+				if (code[i] == '.') {
+					if (n->left)
+						n = n->left;
+					else {
+						break;
+					}
+				}
+				else {
+					if (n->right)
+						n = n->right;
+					else
+						break;
+				}
+				
+			}
+			Insert1(n, letter, code);
+
+		}
+		else Insert1(root, letter, code);
+		
+
+	}
 	
 	string decode_msg(string input)//Function accepts morse code input string to and returns result of conversion
 	{		
