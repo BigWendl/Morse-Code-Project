@@ -16,8 +16,6 @@ private:
 	Binary_Search_Tree<char> letterTree;
 	map<char, string>Morse_Map;
 
-public:
-
 	void create_morse_map()//Function to populate the map with the letters and morse code equivalent.
 	{
 		ifstream fin("morse.txt");//read from the morse.txt file provided by instructor
@@ -26,7 +24,6 @@ public:
 			Morse_Map[letter] = morse;//set key to letter and value to the associated morse code
 		}
 	}
-
 	void buildTree() //wrapper function to build the letter binary tree
 	{
 		letterTree.insert(' ');
@@ -37,7 +34,6 @@ public:
 			insert(letter, morse);
 		}
 	}
-
 	void insert(char letter, string code)//places each node in correct node
 	{
 		BTNode<char> *n = letterTree.getRoot();
@@ -71,6 +67,7 @@ public:
 			n->data = letter;
 	}
 
+public:
 	string decode_msg(string input)//Function accepts morse code input string to and returns result of conversion
 	{		
 		buildTree();
@@ -94,16 +91,14 @@ public:
 			}
 
 			result += n->data;//add each letter as found
-			buildTree();//reread the vector to reset the root
 		}
 		return result;
 	}
-
 	string encode_msg(string input)//Function accepts input string and returns morse code result 
 	{
 		create_morse_map();
 		string result = "";//initialize result string to null
-		create_morse_map();
+
 		for (int i = 0; i < input.size(); i++)//for loop to go through each character in the input string
 			result += Morse_Map[input[i]] + " ";//add morse code result of each character to result string followed by a space
 
@@ -111,3 +106,4 @@ public:
 	}
 };
 #endif
+
